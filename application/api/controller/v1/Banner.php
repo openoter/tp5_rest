@@ -2,6 +2,7 @@
 
 namespace app\api\controller\v1;
 
+use app\lib\exception\BaseException;
 use think\Exception;
 use think\Loader;
 use app\api\model\Banner as BannerModel;
@@ -15,12 +16,13 @@ class Banner {
      * @param $id banner的id号
      */
     public function getBanner($id){
-//        $validate = new IDMustBePositiveInt();
-        $res = Loader::validate('IDMustBePositiveInt')->goCheck();
-//        $res = $validate->goC;
+//        (new IDMustBePositiveInt())->goCheck();
+        Loader::validate('IDMustBePositiveInt')->goCheck();
         $banner = BannerModel::getBannerById($id);
 
-
+        if(!$banner){
+            throw new BaseException();
+        }
         return json($banner);
     }
 }

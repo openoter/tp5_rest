@@ -2,6 +2,7 @@
 
 namespace app\api\model;
 
+use think\Db;
 use think\Exception;
 
 /**
@@ -18,10 +19,7 @@ class Banner {
     public static function getBannerById($id) {
         //TODO：根据banner的id获取Banner信息
 
-        try{
-            1/0;
-        }catch(Exception $e){
-            throw $e;
-        }
+
+        return Db::query("select * from banner where id= ?", [$id]);
     }
 }

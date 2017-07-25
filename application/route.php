@@ -24,9 +24,10 @@ use think\Route;
 
 //Route::get("home/:id", "index/index/index");
 
-Route::group("banner", function(){
-    Route::get(":id", 'api/v1.Banner/getBanner');
-});
+//Route::group("banner", function(){
+//    Route::get(":id", 'api/v1.Banner/getBanner');
+//});
+Route::get("api/v1/banner/:id", "api/v1.Banner/getBanner");
 /*Route::group("sample", function(){
     Route::get(":id", "sample/TestValidate/index");
 });*/

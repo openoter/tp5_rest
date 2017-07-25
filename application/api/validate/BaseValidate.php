@@ -9,6 +9,7 @@
 namespace app\api\validate;
 
 
+use app\lib\exception\ParameterException;
 use think\Exception;
 use think\Request;
 use think\Validate;
@@ -27,8 +28,14 @@ class BaseValidate extends Validate{
         $result = $this->check($all);
         if(!$result){
             //如果出错，抛出异常
-            $error = $this->getError();
-            throw new Exception($error);
+            $e = new ParameterException([
+                //判断$this->error是否为数组
+               "msg"=>is_array($this->error) ? implode(";", $this->error) : $this->error
+            ]);
+//            $e->msg = $this->error;
+            throw $e;
+//            $error = $this->getError();
+//            throw new Exception($error);
         }else{
             return $result;
         }

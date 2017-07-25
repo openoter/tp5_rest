@@ -183,6 +183,54 @@ class IDMustBePositiveInt extends Validate{
     }
 }
 ```
+## 日志
+
+在`config.php`中可以设置`log`相关的信息：
+
+```php
+'log'                    => [
+    // 日志记录方式，内置 file socket 支持扩展
+    'type'  => 'File',
+    // 日志保存目录
+    'path'  => LOG_PATH, 
+    // 日志记录级别
+    'level' => [],
+]
+```
+
+`path`可以更改日志的路径，默认在`Runtime/log`
+
+修改`log`的路径，在`index.php`中定义`LOG_PATH`：
+
+```
+define('LOG_PATH', __DIR__ . '/../log/');
+```
+
+**关闭tp5默认的日志行为**
+
+```php
+'log'                    => [
+    // 日志记录方式，内置 file socket 支持扩展
+    'type'  => 'test'
+]
+```
+
+## 数据库操作
+
+### 原生
+
+`application\api\model\Banner.php`：
+
+```php
+public static function getBannerById($id) {
+    //TODO：根据banner的id获取Banner信息
+    return Db::query("select * from banner where id= ?", [$id]);
+}
+```
+### Model
+
+### 助手函数
+
 
 # 异常处理
 
