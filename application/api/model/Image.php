@@ -4,8 +4,7 @@ namespace app\api\model;
 
 use think\Model;
 
-class Image extends Model
-{
+class Image extends BaseModel {
     //
     protected $hidden = ["delete_time", "id", "from", "update_time"];
 
@@ -15,7 +14,7 @@ class Image extends Model
      * @param $value 字段的值
      * @return string
      */
-    public function getUrlAttr($value){
-        return config("setting.img_prefix").$value;
+    public function getUrlAttr($value, $data){
+        return $this->prefixImgUrl($value, $data);
     }
 }

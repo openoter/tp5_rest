@@ -11,7 +11,7 @@ use think\Model;
  *
  * @package app\api\model
  */
-class Banner extends Model{
+class Banner extends BaseModel{
 
     protected $hidden = ["delete_time", "update_time"];
     /**
