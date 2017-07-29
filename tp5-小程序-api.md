@@ -227,11 +227,115 @@ public static function getBannerById($id) {
     return Db::query("select * from banner where id= ?", [$id]);
 }
 ```
-### Model
+### Model（构造器）
 
-### 助手函数
+[文档参考](https://www.kancloud.cn/manual/thinkphp5/135175)
+
+```php
+public static function getBannerById($id) {
+    //TODO：根据banner的id获取Banner信息
+    $res = Db::table("banner_item")->where("banner_id","=", $id)->select();
+    return json($res);
+}
+```
+
++ `select()`查询所有数据
++ `find()`查询一条数据
+
+**补充：**
+
+除了`select`外，还有`insert()`、`update()`、`delete()`对数据的增改删操作
+
+**闭包查询**
+
+```php
+public static function getBannerById($id) {
+    //TODO：根据banner的id获取Banner信息
+    $res = Db::table("banner_item")->where(function($query) use ($id){
+        //在这不能调用select()方法
+        $query->where("banner_id", "=", $id)
+    })->select();
+    return json($res);
+}
+```
+
+***助手函数**
+
+```php
+public static function getBannerById($id) {
+    //TODO：根据banner的id获取Banner信息
+    $res = db("banner_item")->where("banner_id","=", $id)->select();
+    return json($res);
+}
+```
+
+### ORM
+
+ORM：Object Relation Mapping，对象关系映射，将数据库中的每一张表当做一个对象
+
+使用命令创建模型：
+
+```sh
+> php think make:model api/BannerItem
+```
+
+**查询**
+
+get、find是查询单条数据；
+all、select查询多条数据
 
 
+**隐藏属性（字段）**
+
++ 将获取的数据手动删除（不可取）
+```php
+$data = $banner->toArray();
+```
++ 使用tp5中的hidden([])、visible([])
+```php
+//隐藏delete_time、items下的delete_time和items下的img下的delete_time
+$banner->hidden(["delete_time", "items.delete_time", "items.img.delete_time"]);
+```
++ 在模型内部定义隐藏字段
+```php
+protected $hidden = ["delete_time", "id", "from", "update_time"];
+```
+
+
+### 开启SQL日志记录
+
+**配置**
+
+在`database.php`中打开调试模式：
+
+```php
+'debug'           => true,
+```
+
+在`config.php`中打开调试模式:
+
+```php
+'app_debug'              => true,
+//....
+'log'                    => [
+        // 日志记录方式，内置 file socket 支持扩展
+        'type'  => 'test',
+        // 日志保存目录
+        'path'  => LOG_PATH,
+        // 日志记录级别
+        'level' => ["sql"],
+    ],
+```
+
+在`index.php`中初始化：
+
+```php
+\think\Log::init([
+    "type"=>"File",
+    "path"=>LOG_PATH,
+    "level"=>["sql"]
+]);
+```
 # 异常处理
 
 ## 常规异常处理
