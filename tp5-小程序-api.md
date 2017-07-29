@@ -33,8 +33,16 @@ Route::rule(‘路由表达式’,‘路由地址’,‘请求类型’,‘路�
 ```php
 Route::rule("home/:id", "index/index/index");
 ```
+路由完整匹配：在config.php中：
+
+```php
+// 路由使用完整匹配
+'route_complete_match'   => true,
+```
+
 
 获取传递的参数：
+
 
 **controller/index.php**
 
@@ -301,7 +309,70 @@ $banner->hidden(["delete_time", "items.delete_time", "items.img.delete_time"]);
 protected $hidden = ["delete_time", "id", "from", "update_time"];
 ```
 
+**belongsTo()与hasOne()**
 
+有一张表`Theme`它有一个字段`head_img_id`关联一张子表`Image`。
+
+```php
+class Theme extends BaseModel {
+   public function headImg(){
+        //主
+       $this->belongsTo("Image", "head_img_id", "id");
+   } 
+}
+```
+
+那么另外一张表`Images`中应该使用`hasOne()`：
+
+```php
+class Images extends BaseModel {
+   public function headImg(){
+        //从
+       $this->hasOne("Theme", "head_img_id", "id");
+   } 
+}
+```
+
+总结：
+
++ 如果一张表包含外键，这张表是主表，使用`belongsTo()`，反之则为从表，使用`hasOne()`。
+
+**临时隐藏字段**
+
+方法一：通过collection来实现隐藏
+
+```php
+public function getRecent($count=15){
+    (new Count())->goCheck();
+    $res = ProductModel::getMostRecent($count);
+    if(!$res){
+        throw new ProductException();
+    }
+    //通过collection来实现隐藏
+    $res = collection($res)->hidden(["summary"])->toArray();
+    return json($res);
+}
+```
+
+
+第二种方式：通过配置文件
+
+*database.php*
+```php
+// 数据集返回类型
+'resultset_type'  => 'array',
+
+//改成
+'resultset_type'  => 'collection',
+```
+
+*Product.php*
+```php
+if($res->isEmpty()){
+    throw new ProductException();
+}
+$res->hidden(["summary"]);
+```
 ### 开启SQL日志记录
 
 **配置**

@@ -40,4 +40,21 @@ class BaseValidate extends Validate{
             return $result;
         }
     }
+
+    /**
+     * 判断值是否为正整数
+     * @param $value
+     * @param string $rule
+     * @param string $data
+     * @param string $field
+     * @return bool|string
+     */
+    protected function isPositiveInteger($value, $rule='', $data='', $field='') {
+
+        if (is_numeric($value) && is_int($value + 0) && ($value + 0) > 0) {
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
