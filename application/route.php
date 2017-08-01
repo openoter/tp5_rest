@@ -42,3 +42,25 @@ Route::get("api/:version/product/by_category", "api/:version.Product/getAllByCat
 
 //分类
 Route::get("api/:version/category/all", "api/:version.Category/getAllCategories");
+
+//Token
+Route::post("api/:version/token/user", "api/:version.Token/getToken");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//useradd
+
+Route::post("api/:version/useradd", "api/:version.User/create");
+Route::post("api/:version/login", "api/:version.User/login");
