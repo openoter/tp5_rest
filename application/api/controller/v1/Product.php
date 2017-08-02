@@ -32,6 +32,7 @@ class Product{
     /**
      * 根据分类id获取获取商品
      * @url /product/by_category
+     * @eg  http://zerg.com/api/v1/product/by_category?id=3
      * @param $id
      * @return \think\response\Json
      * @throws ProductException
@@ -45,6 +46,17 @@ class Product{
         }
 //        临时隐藏字段summary
         $res = collection($res)->hidden(["summary"])->toArray();
+        return json($res);
+    }
+
+    public function getOne($id){
+        (new IDMustBePositiveInt())->goCheck();
+
+        $res = ProductModel::getProductDetail($id);
+        if(!$res){
+            throw new ProductException();
+        }
+
         return json($res);
     }
 }

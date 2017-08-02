@@ -4,6 +4,7 @@ namespace app\api\service;
 use app\api\model\User as UserModel;
 use app\lib\exception\TokenException;
 use app\lib\exception\WeChatException;
+use think\Cache;
 use think\Exception;
 
 /**
@@ -107,6 +108,7 @@ class UserToken extends Token{
             ]);
         }
 
+        $k = Cache::get($key);
         return $key;
     }
 
