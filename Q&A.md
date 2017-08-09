@@ -154,3 +154,166 @@ return json(new SuccessMessage(), 201);
 
 只需要在后面加上指定的状态码就行了。
 
+# 检查权限应该使用什么方法？
+
+在`thinkphp`中有一个前置方法，我们可以在前置方法中区检测权限，不过控制器需要继承`controller`。
+
+```php
+class Address extends Controller{
+
+    protected $beforeActionList = [
+        "checkPrimaryScope"=> ["only"=>"createOrUpdateAddress"]
+    ];
+
+    /**
+     * 检测初级权限
+     */
+    protected function checkPrimaryScope(){
+        $scope = TokenService::getCurrentTokenVar('scope');
+        //判断token是否存在
+        if($scope){
+            //判断是有权限
+            if($scope>= ScopeEnum::USER) {
+                return true;
+            }else{
+                throw new ForbiddenException();
+            }
+        }else{
+            throw new TokenException();
+        }
+
+    }
+    public function createOrUpdateAddress(){
+    //...
+    }
+}
+```
+
+# 在`thinkphp`中，复杂类型是数据怎么验证？
+
+在服务器端校验如下格式的数据：
+
+```php
+protected $data = [
+    [
+        "productId" => 1,
+        "count" => 3,
+    ],
+    [
+        "productId" => 2,
+        "count" => 3,
+    ]
+];
+```
+
+思路：
+
++ 首先验证数据是否为数组；
++ 再验证单个商品的数据是否符合规范。
+
+代码：
+
+```php
+class OrderPlace extends BaseValidate{
+    protected $rule = [
+        "products" => "checkProducts"
+    ];
+
+    /**
+     * 单个商品的验证规则
+     * @type array
+     */
+    protected $singRule = [
+        "product_id" => "require|isPositiveInteger",
+        "count" => "require|isPositiveInteger"
+    ];
+
+    /**
+     * 检测订单列表的数据是否符合规范
+     * @param $value
+     * @throws ParameterException
+     */
+    protected function checkProducts($value){
+        //判断是否为数组
+        if(!is_array($value)){
+            throw new ParameterException([
+                "msg" => "商品参数不正确"
+            ]);
+        }
+        //判断是否为空
+        if(empty($value)){
+            throw new ParameterException([
+                "msg" => "商品列表不能为空"
+            ]);
+        }
+        foreach($value as $val){
+            //验证单个商品
+            $this->checkProduct($val);
+        }
+
+    }
+
+    /**
+     * 检查单个商品的合法性
+     * @param $val
+     * @throws ParameterException
+     */
+    private function checkProduct($val){
+        //使用验证器
+        $validate = new Validate($this->singRule);
+        $result = $validate->check($val);
+        if(!$result){
+            throw new ParameterException([
+                "msg" => "商品列表参数错误"
+            ]);
+        }
+    }
+}
+```
+
+# 如何生成订单号
+
+```php
+public static function makeOrderNo(){
+    $yCode = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J');
+    $orderSn =
+        $yCode[intval(date('Y')) - 2017] . strtoupper(dechex(date('m'))) . date(
+            'd') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf(
+            '%02d', rand(0, 99));
+    return $orderSn;
+}
+```
+
+# `Thinkphp5`怎么自动写入时间？
+
+我们只需要在在模型中加入以下代码：
+
+tp5会自动检测是否是插入操作，如果是那么就会自动插入create_time，如果数据库中的字段并不是create_time，那么需要修改`$createTime`的值。
+
+```php
+protected $autoWriteTimestamp = true;
+```
+
+# `Thinkphp5`中怎么使用事务？
+
+事务：
+
+数据完整性，一致性
+```php
+private function createOrder($snap){
+        Db::startTrans(); //开启事务
+        try{
+
+            //...
+            Db::commit();
+            return [
+                'order_no' => $orderNo,
+                'order_id' => $orderId,
+                'create_time' => $create_time
+            ];
+        }catch(Exception $e){
+            Db::rollback(); //事务的回滚
+            throw $e;
+        }
+    }
+```

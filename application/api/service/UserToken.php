@@ -2,6 +2,7 @@
 
 namespace app\api\service;
 use app\api\model\User as UserModel;
+use app\lib\enum\ScopeEnum;
 use app\lib\exception\TokenException;
 use app\lib\exception\WeChatException;
 use think\Cache;
@@ -134,7 +135,11 @@ class UserToken extends Token{
     private function prepareCacheData($wxRes, $uid){
         $cache = $wxRes;
         $cache['uid'] = $uid;
-        $cache['scope'] = 16; //数字越大权限越大，暂时赋值
+        /**
+         * 数字越大权限越大，暂时赋值,16代表用户的权限值
+         * 32表示CMS（管理员）的权限值
+         */
+        $cache['scope'] = ScopeEnum::USER;
         return $cache;
     }
     /**

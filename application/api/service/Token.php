@@ -11,7 +11,8 @@ use app\lib\exception\TokenException;
 use think\Cache;
 use think\Exception;
 use think\Request;
-
+use app\lib\enum\ScopeEnum;
+use app\lib\exception\ForbiddenException;
 /**
  * Class Token
  * UserToken的基类
@@ -80,5 +81,49 @@ class Token {
         //token
         $uid = self::getCurrentTokenVar("uid");
         return $uid;
+    }
+
+    /**
+     * 检查用户的权限
+     * @return bool
+     * @throws Exception
+     * @throws ForbiddenException
+     * @throws TokenException
+     */
+    public static function needExclusiveScope() {
+        $scope = self::getCurrentTokenVar('scope');
+        //判断token是否存在
+        if($scope){
+            //判断是有权限（用户专用权限）
+            if($scope == ScopeEnum::USER) {
+                return true;
+            }else{
+                throw new ForbiddenException();
+            }
+        }else{
+            throw new TokenException();
+        }
+    }
+
+    /**
+     * 需要用户权限的（管理员、登录用户都可）
+     * @return bool
+     * @throws Exception
+     * @throws ForbiddenException
+     * @throws TokenException
+     */
+    public static function needPrimaryScope() {
+        $scope = self::getCurrentTokenVar('scope');
+        //判断token是否存在
+        if($scope){
+            //判断是有权限（用户专用权限）
+            if($scope >= ScopeEnum::USER) {
+                return true;
+            }else{
+                throw new ForbiddenException();
+            }
+        }else{
+            throw new TokenException();
+        }
     }
 }

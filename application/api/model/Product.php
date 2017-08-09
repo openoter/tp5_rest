@@ -3,6 +3,7 @@
 namespace app\api\model;
 
 class Product extends BaseModel {
+    protected $resultSetType = 'collection';
     //pivot：表示多对多的中间表属性
     protected $hidden = ["delete_time", "update_time", "from",
         "category_id", "create_time", "pivot", "main_img_id"];

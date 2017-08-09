@@ -56,6 +56,11 @@ Route::get("api/:version/category/all", "api/:version.Category/getAllCategories"
 //Token
 Route::post("api/:version/token/user", "api/:version.Token/getToken");
 
+//Order
+
+Route::group("api/:version/order", function(){
+    Route::post("", "api/:version.Order/placeOrder");
+});
 
 
 
@@ -74,3 +79,4 @@ Route::post("api/:version/token/user", "api/:version.Token/getToken");
 
 Route::post("api/:version/useradd", "api/:version.User/create");
 Route::post("api/:version/login", "api/:version.User/login");
+//Route::get("api/:version/second", "api/:version.Address/second");
