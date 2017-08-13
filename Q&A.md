@@ -317,3 +317,7 @@ private function createOrder($snap){
         }
     }
 ```
+
+# TP5中接口怎么做分页查询
+
+tp5中提供了一个`paginate()`方法，我们可以通过它来获取分页数据。

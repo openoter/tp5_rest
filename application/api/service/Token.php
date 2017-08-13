@@ -126,4 +126,25 @@ class Token {
             throw new TokenException();
         }
     }
+
+    /**
+     * 检查用户是否是合法操作
+     * @param $checkedUId
+     * @return bool
+     * @throws Exception
+     */
+    public static function isValidOperate($checkedUId){
+        if(!$checkedUId){
+            throw new Exception("检查UID是必须传递一个被检查的UID");
+        }
+
+        //当前请求用户的id
+        $currentOperaUID = self::getCurrentUid();
+
+        if($checkedUId === $currentOperaUID){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

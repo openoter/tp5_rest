@@ -288,4 +288,20 @@ class Order {
 
         return $pStatus;
     }
+
+    /**
+     * 检查商品的库存量
+     * @param $orderId 订单id
+     * @return array
+     */
+    public function checkOrderStock($orderId){
+        $oProduct = OrderProduct::where('order_id', '=', $orderId)
+            ->select();
+        $this->oProducts = $oProduct;
+
+        $this->products = $this->getProductsByOrder($oProduct);
+
+        $status = $this->getOrderStatus();
+        return $status;
+    }
 }

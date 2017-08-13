@@ -33,7 +33,7 @@ class BaseController extends Controller{
     }
 
     /**
-     * 检查用户的权限
+     * 检查用户的权限(普通用户或者管理员)
      * @throws \app\lib\exception\ForbiddenException
      * @throws \app\lib\exception\TokenException
      */
