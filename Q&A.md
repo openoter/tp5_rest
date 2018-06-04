@@ -1,3 +1,32 @@
+# thinkphp 数据库操作
++ Db::query()
++ Db::table()
++ ORM
+
+## where的三种写法
+
++ 表达式
+
+```php
+Db::table('banner')->where('id', '=', 1)
+    ->find();
+```
++ 数组
+
+```php
+Db::table('banner')->where(['id'=>1])
+    ->find();
+```
++ 闭包
+
+```php
+Db::table('banner')->where(function($query){
+    $query->where('id', '=', 1)
+})->find();
+```
+
+# 开启`SQL`日志
+
 # 报错“Call to a member function eagerlyResult() on null”
 
 原因：关联模型时没有返回，如：

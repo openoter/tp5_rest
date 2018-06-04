@@ -25,7 +25,7 @@ class Product{
             throw new ProductException();
         }
 
-        $res = collection($res)->hidden(["summary"])->toArray();
+       // $res = collection($res)->hidden(["summary"])->toArray();
         return json($res);
     }
 
@@ -45,7 +45,7 @@ class Product{
             throw new ProductException();
         }
 //        临时隐藏字段summary
-        $res = collection($res)->hidden(["summary"])->toArray();
+       // $res = collection($res)->hidden(["summary"])->toArray();
         return json($res);
     }
 

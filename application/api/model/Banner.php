@@ -25,7 +25,7 @@ class Banner extends BaseModel{
         /*$res = Db::table("banner_item")
             ->where("banner_id","=", $id)
             ->select();*/
-
+//        self::where('id', 1)->find();
         $res = self::with(['items', 'items.img'])->find($id);
         return $res;
     }
